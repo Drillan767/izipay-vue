@@ -1,0 +1,56 @@
+[
+    {
+        "nbGeneration": 1,
+        "title": "Pokemon Rouge / Bleu / Jaune",
+        "offset": 0,
+        "limit": 151
+    },
+    {
+        "nbGeneration": 2,
+        "title": "Pokemon Or / Argent",
+        "offset": 151,
+        "limit": 100
+    },
+    {
+        "nbGeneration": 3,
+        "title": "Pokemon Ruby / Saphir",
+        "offset": 251,
+        "limit": 135
+    },
+    {
+        "nbGeneration": 4,
+        "title": "Pokemon Diamant / Perle / Platine",
+        "offset": 386,
+        "limit": 107
+    },
+    {
+        "nbGeneration": 5,
+        "title": "Pokemon Noir / Blanc",
+        "offset": 493,
+        "limit": 156
+    },
+    {
+        "nbGeneration": 6,
+        "title": "Pokemon X / Y",
+        "offset": 649,
+        "limit": 72
+    },
+    {
+        "nbGeneration": 7,
+        "title": "Pokemon Soleil / Lune",
+        "offset": 721,
+        "limit": 81
+    },
+    {
+        "nbGeneration": 8,
+        "title": "Pokemon Épée / Bouclier",
+        "offset": 802,
+        "limit": 81
+    },
+    {
+        "nbGeneration": 9,
+        "title": "Pokemon Écarlate / Violet",
+        "offset": 883,
+        "limit": 114
+    }
+]

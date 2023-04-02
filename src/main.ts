@@ -1,7 +1,10 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import { createPinia } from 'pinia'
 import './styles/main.scss'
 import App from './App.vue'
+
+const pinia = createPinia()
 
 const router = createRouter({
     history: createWebHistory(),
@@ -21,4 +24,5 @@ const router = createRouter({
 
 createApp(App)
     .use(router)
+    .use(pinia)
     .mount('#app')

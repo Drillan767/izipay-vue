@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="home grid grid-cols-3 gap-3">
+        <div class="home grid grid-cols-1 md:grid-cols-3 gap-3">
 
             <div v-for="(g, i) in generations" :key="i" class="col-span-1 h-20 bg-gray-100">
                 <p>{{ g.title }}</p>

@@ -1,25 +1,56 @@
 <template>
-  <div>
-    <nav class="flex">
-        <p>TODO: Lien vers Github</p>
-    </nav>
+    <div class="app">
 
-    <h1 class="">IZIPAY POKEDEX</h1>
+        <nav class="bg-white border-gray-200 dark:bg-gray-900">
+            <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+                <router-link to="/" class="flex items-center">
+                    <img src="./assets/pokedex.png" class="h-8 mr-3" alt="Flowbite Logo" />
+                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">IZIPAY POKEDEX</span>
+                </router-link>
 
-    <main>
-        
-        <router-view />
-    </main>
-  </div>
+                <div class="block md:w-auto" id="navbar-default">
+                    <ul
+                        class="font-medium flex flex-col p-4 md:p-0 mt-4 md:flex-row md:space-x-8 md:mt-0">
+                        <li>
+                            <a href="https://github.com/Drillan767/izipay-vue"
+                                class="block py-2 pl-3 pr-4 text-white dark:text-white"
+                                target="_blank">
+                                Github
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="my-4">
+            <button class="bg-red-400 p-2" @click="store.test()">
+                Charger les données random
+            </button>
+        </div>
+        <main class="px-2 mt-10">
+            <router-view />
+        </main>
+    </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
+import { usePokemonStore } from './stores/pokemon'
 
+const store = usePokemonStore()
+
+const test = async () => await store.test()
+
+onMounted(() => {
+    if (store.pokemons.length === 0) {
+        store.loadPokemons()
+    }
+})
 
 </script>
 
 <style scoped>
-
 h1 {
     @apply text-4xl text-white font-bold text-center mb-4;
 }
@@ -27,5 +58,4 @@ h1 {
 main {
     @apply container mx-auto;
 }
-
 </style>

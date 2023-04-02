@@ -9,6 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.11",
+    "add": "^2.0.6",
+    "graphql": "^16.6.0",
+    "graphql-tag": "^2.12.6",
     "idb-keyval": "^6.2.0",
     "pinia": "^2.0.33",
     "tailwindcss": "^3.3.1",
@@ -16,6 +20,7 @@
     "vue-router": "4"
   },
   "devDependencies": {
+    "@types/node": "^18.15.11",
     "@vitejs/plugin-vue": "^4.1.0",
     "autoprefixer": "^10.4.14",
     "postcss-import": "^15.1.0",

@@ -15,9 +15,15 @@ const router = createRouter({
             component: () => import('./components/Home.vue')
         },
         {
-            path: '/generation/:nbGeneration',
+            // Limiting to numbers 1 to 9, to avoid api errors.
+            path: '/:generation(generation-[i|ii|iii|iv|v|vi|vii|viii|ix])',
             name: 'Generation',
             component: () => import('./components/Generation.vue')
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            name: 'NotFound',
+            component: () => import('./components/404.vue')
         }
     ]
 })

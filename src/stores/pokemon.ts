@@ -1,7 +1,19 @@
 import { computed, ref } from 'vue'
-import { defineStore, acceptHMRUpdate } from 'pinia'
-import { getMany, get, setMany, set, update, clear, values, createStore } from 'idb-keyval'
-import type { Pokemon, Name } from '../types'
+import { defineStore } from 'pinia'
+import client from '../config/graphql'
+// TODO:TEST À SUPPRIMER
+import pokemons from '../assets/pokemons.json'
+import { getMany, get, setMany, set, update, clear, values, createStore, entries } from 'idb-keyval'
+import type { Pokemon, PokemonResponse } from '../types'
+import ALL_POKEMONS from '../queries/allPokemons'
+
+
+type GlobalResponse = {
+    results: {
+        name: string,
+        url: string
+    }[]
+}
 
 const pokemonURL = 'https://pokeapi.co/api/v2'
 
@@ -11,31 +23,59 @@ Si resulats vide, on query l'api, puis renseigne les infos manquantes
 On stocke alors les infos en set
 */
 
-const pokemonDB = createStore('pokemons', 'pokemons')
-const abilitiesDB = createStore('abilities', 'abilities')
-
 export const usePokemonStore = defineStore('pokemon', () => {
-    // ... the db.
     const pokemons = ref<Pokemon[]>([])
+    const totalPokemons = ref(0)
 
-    const test = async () => {
-        await setMany([['test1', 'value1'], ['test2', 'value2'], ['test3', 'value3']])
-    }
+    const dbFilled = computed(() => {
+        queryIDB()
+        return totalPokemons.value !== 0
+    })
+
+    const getResult = (total: number) => totalPokemons.value = total
+
+    const currentGen = ref('')
 
     const loadPokemons = async () => {
-        await get('non-existing-value', pokemonDB)
-            .then((data) => {
-                console.log(data)
+        const pokemonList: [string, Pokemon][] = []
+        const { data }: PokemonResponse = await client.query({ query: ALL_POKEMONS })
+
+        const parsedPokemons: Pokemon[] = data.pokemon_v2_pokemonspecies.map((result) => {
+
+            const { name } = result.pokemon_v2_pokemonspeciesnames[0]
+            const { pokemon_v2_pokemons: [{ pokemon_v2_pokemontypes, pokemon_v2_pokemonabilities }] } = result
+            const abilities = pokemon_v2_pokemonabilities.map((ability) => {
+                const { pokemon_v2_ability: { pokemon_v2_abilitynames: [{ name }] } } = ability
+                return {
+                    hidden: ability.is_hidden,
+                    name,
+                }
             })
+
+            return {
+                id: toPokemonId(result.id),
+                legendary: result.is_legendary,
+                name,
+                generation: result.pokemon_v2_generation.name,
+                imgUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${result.id}.png`,
+                types: pokemon_v2_pokemontypes.map((type) => type.pokemon_v2_type.name),
+                abilities,
+                obtained: false,
+            }
+        })
+
+        parsedPokemons.forEach((pokemon) => pokemonList.push([pokemon.id, pokemon]))
+        await setMany(pokemonList)
+
     }
 
     const pokemonByGen = computed(() => {
-        const result = {} as { [key: string]: Pokemon[] }
+        /* const result = {} as { [key: string]: Pokemon[] }
         for (let i: number = 1; i <= 9; i++) {
             result[`gen_${i}`] = pokemons.value.filter((p) => p.generation === i)
         }
 
-        return result
+        return result */
     })
 
     const globalProgress = computed(() => {
@@ -43,63 +83,56 @@ export const usePokemonStore = defineStore('pokemon', () => {
         // Si array vide, retourne 0
     })
 
-    async function addPokemons(params: { limit: number, offset: number }) {
-        let fetchedPokemons = []
-        const { limit, offset } = params
-
-        const response = await fetch(`${pokemonURL}/pokemon?limit=${limit}&offset=${offset}`)
-        const data = await response.json()
-
-        // We need both the pokemon's ingame data and general informations, so both queries are required.
-        // However, we store the ability + translation since several pokemons share the sames.
-        data.results.forEach(async (d: { name: string, url: string }) => {
-            const pokemonId = d.url
-                // Removing trailing '/'.
-                .slice(0, -1)
-                .split(/[\\/]/).pop()
-
-            // Retrieving general informations.
-            const specDetails = await fetch(`${pokemonURL}/pokemon-species/${pokemonId}`)
-            const specData = await specDetails.json()
-
-            const pkmnDetail = await fetch(`${pokemonURL}/pokemon/${pokemonId}`)
-            const pkmnData = await pkmnDetail.json()
-
-            const legendary = specData.is_legendary
-            const pkmnName = specData.names.find((n: Name) => n.language.name === 'fr').name
-            const imgUrl = pkmnData.sprites.front_default
-            const types = pkmnData.types.map((t: { type: { name: string } }) => t.type.name)
-            const abilities = await handleAbilities(pkmnData.abilities)
-
-            console.log({abilities})
-            console.log({ specData, pkmnData })
-        })
-    }
-
     async function pokemonObtained(id: number) {
 
     }
 
+    // Custom code to get how many pokemons are stored.
+    const queryIDB = () => {
+        const request = indexedDB.open('keyval-store')
+
+        request.onsuccess = (e) => {
+            const db = request.result
+
+            // Open a transaction to the "keyval" object store
+            const transaction = db.transaction(['keyval'], 'readonly')
+            const objectStore = transaction.objectStore('keyval')
+
+            // Get the number of items in the object store
+            const countRequest = objectStore.count()
+
+            countRequest.onsuccess = () => getResult(countRequest.result)
+        }
+    }
+
     return {
-        test,
+        totalPokemons,
+        dbFilled,
         pokemons,
         loadPokemons,
         pokemonByGen,
         globalProgress,
-        addPokemons,
         pokemonObtained,
     }
 })
 
-const handleAbilities = async (abilities: { ability: { name: string, url: string } }[]) => {
-    let results = [] as {name: string, hidden: boolean}[]
+const toPokemonId = (id: number) => {
+    let numStr = String(id)
+    while (numStr.length < 4) {
+        numStr = '0' + numStr
+    }
 
-    const abilityUrls = abilities.map((a) => a.ability.url)
-    console.log(abilityUrls)
-    
-    abilities.forEach((a) => {
-        const abilityId = a.ability.url
-    })
+    return numStr
+}
 
-    return results
+// Need to work more on this.
+const groupByGeneration = (pokemonArray: Pokemon[]): { [key: number]: Pokemon[] } => {
+    return pokemonArray.reduce<{ [key: number]: Pokemon[] }>((result, pokemon) => {
+        const generation = pokemon.generation;
+        if (!result[generation as any]) {
+            result[generation as any] = [];
+        }
+        result[generation as any].push(pokemon);
+        return result;
+    }, {} as { [key: number]: Pokemon[] });
 }

@@ -1,6 +1,5 @@
 <template>
     <div class="app">
-
         <nav class="bg-white border-gray-200 dark:bg-gray-900">
             <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <router-link to="/" class="flex items-center">
@@ -18,16 +17,11 @@
                                 Github
                             </a>
                         </li>
-
                     </ul>
                 </div>
             </div>
         </nav>
-        <div class="my-4">
-            <button class="bg-red-400 p-2" @click="store.test()">
-                Charger les données random
-            </button>
-        </div>
+
         <main class="px-2 mt-10">
             <router-view />
         </main>
@@ -40,10 +34,9 @@ import { usePokemonStore } from './stores/pokemon'
 
 const store = usePokemonStore()
 
-const test = async () => await store.test()
 
 onMounted(() => {
-    if (store.pokemons.length === 0) {
+    if (!store.dbFilled) {
         store.loadPokemons()
     }
 })

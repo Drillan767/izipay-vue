@@ -1,6 +1,5 @@
 <template>
     <div>
-        <button @click="triggerTest" class="bg-red-400 my-4 p-1">Lancer le test omg</button>
         <div class="home grid grid-cols-3 gap-3">
 
             <div v-for="(g, i) in generations" :key="i" class="col-span-1 h-20 bg-gray-100">
@@ -17,8 +16,6 @@ import generations from '../assets/generations.json'
 import { usePokemonStore } from '../stores/pokemon'
 
 const store = usePokemonStore()
-
-const triggerTest = () => store.test()
 
 
 </script>

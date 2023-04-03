@@ -16,9 +16,21 @@ const router = createRouter({
         },
         {
             // Limiting to numbers 1 to 9, to avoid api errors.
-            path: '/:generation(generation-[i|ii|iii|iv|v|vi|vii|viii|ix])',
+            // path: '/:generation(generation-[i|ii|iii|iv|v|vi|vii|viii|ix])',
+            // path: '/generation-:generation([ivx]{1,4})',
+            path: '/:generation(generation-[ivx]{1,4})',
             name: 'Generation',
-            component: () => import('./components/Generation.vue')
+            component: () => import('./components/Generation.vue'),
+            beforeEnter: (to, _, next) =>  {
+                const {params: { generation } } = to
+                const validRomanChars = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix']
+                if (validRomanChars.some((rm) => generation.toString().includes(rm))) {
+                // if (generation.toString().includes(validRomanChars)) {
+                    next()
+                } else {
+                    next({name: 'NotFound'})
+                }
+            }
         },
         {
             path: '/:pathMatch(.*)*',

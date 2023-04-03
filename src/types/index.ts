@@ -12,13 +12,12 @@ export type Pokemon = {
     obtained: boolean,
 }
 
-export type Name = {
-    language: {
-        name: string,
-        url: string
-    },
-    name: string
-}
+export type List = {
+    gen: string,
+    name: string,
+    obtained: boolean,
+    nbPokemons: number,
+}[]
 
 export type PokemonSpeciesResponse = {
     is_legendary: boolean,
@@ -59,4 +58,18 @@ export type PokemonResponse = {
             is_legendary: boolean,
         }[],
     }
+}
+
+export type Generation = 'generation-i' |
+    'generation-ii' |
+    'generation-iii' |
+    'generation-iv' |
+    'generation-v' |
+    'generation-vi' |
+    'generation-vii' |
+    'generation-viii' |
+    'generation-ix'
+
+export type GenList = {
+    [key in Generation]: string
 }

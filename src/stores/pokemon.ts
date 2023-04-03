@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import client from '../config/graphql'
-import { getMany, get, setMany, set, update, clear, values } from 'idb-keyval'
+import { getMany, get, setMany, set, update, clear, values, createStore } from 'idb-keyval'
 import type { Pokemon, PokemonResponse } from '../types'
 import ALL_POKEMONS from '../queries/allPokemons'
 
@@ -14,14 +14,10 @@ On stocke alors les infos en set
 export const usePokemonStore = defineStore('pokemon', () => {
     const pokemons = ref<Pokemon[]>([])
 
-    const totalPokemons = ref(0)
-
-    const dbFilled = computed(() => {
-        queryIDB()
-        return totalPokemons.value !== 0
-    })
-
-    const getResult = (total: number) => totalPokemons.value = total
+    const dbFilled = async () => {
+        const emAll = await values()
+        return emAll.length > 0
+    }
 
     const currentGen = ref('')
 
@@ -33,7 +29,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
     }
 
     const globalProgress = async () => {
-        const initVal = {} as {[key: string]: number}
+        const initVal = {} as { [key: string]: number }
         const allPokemons = await values()
 
         const result = allPokemons.reduce(
@@ -56,40 +52,15 @@ export const usePokemonStore = defineStore('pokemon', () => {
             ...pkmn,
             obtained: result[pkmn.gen]
         }))
+
+        return []
     }
 
     async function pokemonObtained(id: number) {
 
     }
 
-    // Custom code to get how many pokemons are stored.
-    const queryIDB = () => {
-        const request = indexedDB.open('keyval-store')
-
-        request.onsuccess = (e) => {
-            const db = request.result
-
-            // Open a transaction to the "keyval" object store
-            try {
-                const transaction = db.transaction(['keyval'], 'readonly')
-                const objectStore = transaction.objectStore('keyval')
-
-                // Get the number of items in the object store
-                const countRequest = objectStore.count()
-
-                countRequest.onsuccess = () => getResult(countRequest.result)
-                countRequest.onerror = () => getResult(0)
-            } 
-            catch {
-                getResult(0)
-            }
-        }
-
-        request.onerror = () => getResult(0)
-    }
-
     return {
-        totalPokemons,
         currentGen,
         dbFilled,
         pokemons,
@@ -112,6 +83,7 @@ const toPokemonId = (id: number) => {
 const parsePokemons = async () => {
     const pokemonList: [string, Pokemon][] = []
     const { data }: PokemonResponse = await client.query({ query: ALL_POKEMONS })
+    console.log(data)
 
     const parsedPokemons: Pokemon[] = data.pokemon_v2_pokemonspecies.map((result) => {
 
@@ -139,18 +111,6 @@ const parsePokemons = async () => {
 
     parsedPokemons.forEach((pokemon) => pokemonList.push([pokemon.id, pokemon]))
     await setMany(pokemonList)
-}
-
-// Need to work more on this.
-const groupByGeneration = (pokemonArray: Pokemon[]): { [key: number]: Pokemon[] } => {
-    return pokemonArray.reduce<{ [key: number]: Pokemon[] }>((result, pokemon) => {
-        const generation = pokemon.generation;
-        if (!result[generation as any]) {
-            result[generation as any] = [];
-        }
-        result[generation as any].push(pokemon);
-        return result;
-    }, {} as { [key: number]: Pokemon[] });
 }
 
 const pokemonMeta = [

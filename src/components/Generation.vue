@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto">
-        <p>{{ titles[gen]}}</p>
+        <h1>{{ titles[gen]}}</h1>
 
         <div class="grid-container">
             <div class="item" v-for="(pokemon, i) in store.pokemons" :key="i">
@@ -24,12 +24,9 @@ const gen = generation.toString() as Generation
 
 store.currentGen = gen as Generation
 
-onMounted(() => {
-    store.pokemonByGen(gen)
+onMounted(() => store.pokemonByGen(gen))
 
-})
-
-
+// TODO: Optimiser avec le store
 const titles: GenList = {
     'generation-i': 'Pokemon Rouge / Bleu / Jaune',
     'generation-ii': 'Pokemon Or / Argent',
@@ -43,12 +40,16 @@ const titles: GenList = {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+h1 {
+    @apply mt-4 mb-8 text-4xl font-extrabold text-white text-center;
+}
+
 .grid-container {
     @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
 
     .item {
-        @apply flex justify-center text-6xl border-2 border-gray-300 rounded-xl p-6 bg-gray-100
+        @apply flex justify-center text-2xl border-2 border-gray-300 rounded-xl p-6 bg-gray-100
     }
 }
 </style>

@@ -34,9 +34,9 @@ import { usePokemonStore } from './stores/pokemon'
 
 const store = usePokemonStore()
 
-
-onMounted(() => {
-    if (!store.dbFilled) {
+onMounted(async () => {
+    const filled = await store.dbFilled()
+    if (!filled) {
         store.loadPokemons()
     }
 })

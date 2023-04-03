@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <div class="home">
+        <h1>Progression</h1>
         <div class="home grid grid-cols-1 md:grid-cols-3 gap-3">
-
             <template v-for="(game, i) in list" :key="i">
-                <RouterLink :to="{name: 'Generation', params: {generation: game.gen}}">
+                <RouterLink :to="{ name: 'Generation', params: { generation: game.gen } }">
                     <div class="col-span-1 h-20 bg-gray-100">
                         <p>{{ game.name }}</p>
                         <p>Progression : {{ game.obtained }} / {{ game.nbPokemons }}</p>
@@ -30,3 +30,9 @@ onMounted(async () => {
 
 const generations = [{}]
 </script>
+
+<style scoped lang="scss">
+h1 {
+    @apply text-4xl text-white font-bold text-center mb-4;
+}
+</style>

@@ -56,13 +56,6 @@ export const usePokemonStore = defineStore('pokemon', () => {
             ...pkmn,
             obtained: result[pkmn.gen]
         }))
-
-        /* return pokemonMeta.map((pkmn) => {
-            
-        }) */
-
-        console.log({result})
-
     }
 
     async function pokemonObtained(id: number) {
@@ -77,14 +70,22 @@ export const usePokemonStore = defineStore('pokemon', () => {
             const db = request.result
 
             // Open a transaction to the "keyval" object store
-            const transaction = db.transaction(['keyval'], 'readonly')
-            const objectStore = transaction.objectStore('keyval')
+            try {
+                const transaction = db.transaction(['keyval'], 'readonly')
+                const objectStore = transaction.objectStore('keyval')
 
-            // Get the number of items in the object store
-            const countRequest = objectStore.count()
+                // Get the number of items in the object store
+                const countRequest = objectStore.count()
 
-            countRequest.onsuccess = () => getResult(countRequest.result)
+                countRequest.onsuccess = () => getResult(countRequest.result)
+                countRequest.onerror = () => getResult(0)
+            } 
+            catch {
+                getResult(0)
+            }
         }
+
+        request.onerror = () => getResult(0)
     }
 
     return {

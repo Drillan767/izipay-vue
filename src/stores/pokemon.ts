@@ -83,10 +83,8 @@ const toPokemonId = (id: number) => {
 const parsePokemons = async () => {
     const pokemonList: [string, Pokemon][] = []
     const { data }: PokemonResponse = await client.query({ query: ALL_POKEMONS })
-    console.log(data)
 
     const parsedPokemons: Pokemon[] = data.pokemon_v2_pokemonspecies.map((result) => {
-
         const { name } = result.pokemon_v2_pokemonspeciesnames[0]
         const { pokemon_v2_pokemons: [{ pokemon_v2_pokemontypes, pokemon_v2_pokemonabilities }] } = result
         const abilities = pokemon_v2_pokemonabilities.map((ability) => {

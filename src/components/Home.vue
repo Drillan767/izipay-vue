@@ -26,8 +26,7 @@ import type { List } from '../types'
 const store = usePokemonStore()
 
 const list = ref<List>([])
-const percentage = (obtained: number, total: number) => (total / 100) * obtained
-
+const percentage = (obtained: number, total: number) => (obtained / total) * 100
 onMounted(async () => {
     list.value = await store.globalProgress()
 })
@@ -41,7 +40,7 @@ onMounted(async () => {
         @apply relative;
 
         .progress {
-            @apply bg-green-200 absolute z-0 top-0 bottom-0 left-0;
+            @apply bg-green-200 absolute z-0 top-0 bottom-0 left-0 rounded-lg;
         }
 
         .content {

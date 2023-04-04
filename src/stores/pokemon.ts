@@ -107,8 +107,6 @@ const parsePokemons = async () => {
     })
 
     parsedPokemons.forEach((pokemon) => pokemonList.push([pokemon.id, pokemon]))
-
-    console.log(parsedPokemons)
     await setMany(pokemonList)
 }
 

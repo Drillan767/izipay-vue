@@ -62,7 +62,7 @@ const progress = computed(() => {
     const circumference = 50 * 2 * Math.PI
     const obtained = store.pokemons.filter((p) => p.obtained).length
     const total = store.pokemons.length
-    const percent = Math.round((total / 100) * obtained)
+    const percent = Math.round((obtained / total) * 100)
     
     return {
         circumference,

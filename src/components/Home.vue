@@ -28,7 +28,6 @@ const store = usePokemonStore()
 const list = ref<List>([])
 const percentage = (obtained: number, total: number) => (total / 100) * obtained
 
-
 onMounted(async () => {
     list.value = await store.globalProgress()
 })

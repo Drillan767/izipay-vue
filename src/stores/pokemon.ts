@@ -1,7 +1,7 @@
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import client from '../config/graphql'
-import { getMany, get, setMany, set, update, clear, values, createStore } from 'idb-keyval'
+import { setMany, update, values } from 'idb-keyval'
 import type { Pokemon, PokemonResponse } from '../types'
 import ALL_POKEMONS from '../queries/allPokemons'
 
@@ -52,8 +52,6 @@ export const usePokemonStore = defineStore('pokemon', () => {
             ...pkmn,
             obtained: result[pkmn.gen]
         }))
-
-        return []
     }
 
     const pokemonObtained = async (id: string, status: boolean) => {
@@ -109,6 +107,8 @@ const parsePokemons = async () => {
     })
 
     parsedPokemons.forEach((pokemon) => pokemonList.push([pokemon.id, pokemon]))
+
+    console.log(parsedPokemons)
     await setMany(pokemonList)
 }
 

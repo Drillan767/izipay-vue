@@ -48,6 +48,8 @@ export const usePokemonStore = defineStore('pokemon', () => {
             initVal
         )
 
+        console.log(result)
+
         return pokemonMeta.map((pkmn) => ({
             ...pkmn,
             obtained: result[pkmn.gen]

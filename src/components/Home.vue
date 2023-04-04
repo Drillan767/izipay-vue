@@ -30,9 +30,3 @@ onMounted(async () => {
 
 const generations = [{}]
 </script>
-
-<style scoped lang="scss">
-h1 {
-    @apply text-4xl text-white font-bold text-center mb-4;
-}
-</style>

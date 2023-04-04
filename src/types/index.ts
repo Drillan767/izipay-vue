@@ -15,7 +15,7 @@ export type Pokemon = {
 export type List = {
     gen: string,
     name: string,
-    obtained: boolean,
+    obtained: number,
     nbPokemons: number,
 }[]
 

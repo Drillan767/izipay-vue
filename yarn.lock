@@ -736,6 +736,11 @@ minimatch@^6.1.6:
   dependencies:
     brace-expansion "^2.0.1"
 
+mosha-vue-toastify@^1.0.23:
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/mosha-vue-toastify/-/mosha-vue-toastify-1.0.23.tgz#eaa5de2a4ee0ca1167421132a42c1ac55ebb7e26"
+  integrity sha512-K9fij3e3H+E/Lj82ISrgmyKrtM5RNmtZC/KG/KH47+oZGmzAkN/Zuz39kBdT/Mp8OxaHuIWQntEUMP+HdmK1xA==
+
 muggle-string@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/muggle-string/-/muggle-string-0.2.2.tgz#786aa53fea1652c61c6a59e1f839292b262bc72a"

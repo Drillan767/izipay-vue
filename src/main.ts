@@ -1,8 +1,10 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { createPinia } from 'pinia'
-import './styles/main.scss'
 import App from './App.vue'
+import './styles/main.scss'
+
+
 
 const pinia = createPinia()
 
@@ -15,9 +17,7 @@ const router = createRouter({
             component: () => import('./components/Home.vue')
         },
         {
-            // Limiting to numbers 1 to 9, to avoid api errors.
-            // path: '/:generation(generation-[i|ii|iii|iv|v|vi|vii|viii|ix])',
-            // path: '/generation-:generation([ivx]{1,4})',
+            // Limiting to gens 1 to 9, to avoid errors.
             path: '/:generation(generation-[ivx]{1,4})',
             name: 'Generation',
             component: () => import('./components/Generation.vue'),
@@ -25,7 +25,6 @@ const router = createRouter({
                 const {params: { generation } } = to
                 const validRomanChars = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix']
                 if (validRomanChars.some((rm) => generation.toString().includes(rm))) {
-                // if (generation.toString().includes(validRomanChars)) {
                     next()
                 } else {
                     next({name: 'NotFound'})

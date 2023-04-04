@@ -9,3 +9,7 @@
 h1 {
     @apply mt-4 mb-8 text-4xl font-extrabold text-center;
 }
+
+.item {
+    @apply cursor-pointer text-xl border-2 border-gray-300 hover:border-gray-500 rounded-lg p-6 bg-gray-100 transition-all duration-300;
+}

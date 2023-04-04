@@ -48,8 +48,6 @@ export const usePokemonStore = defineStore('pokemon', () => {
             initVal
         )
 
-        console.log(result)
-
         return pokemonMeta.map((pkmn) => ({
             ...pkmn,
             obtained: result[pkmn.gen]
@@ -58,8 +56,9 @@ export const usePokemonStore = defineStore('pokemon', () => {
         return []
     }
 
-    async function pokemonObtained(id: number) {
-
+    const pokemonObtained = async (id: string, status: boolean) => {
+        await update(id, (pokemon) => ({...pokemon, obtained: status}))
+        await pokemonByGen(currentGen.value)
     }
 
     return {
